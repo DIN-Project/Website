@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\din3.props" />
+</Project>
