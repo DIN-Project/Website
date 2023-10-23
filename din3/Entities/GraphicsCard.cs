@@ -7,5 +7,8 @@ public class GraphicsCard
     public DateTime Created{get;set;}
     public DateTime Updated{get;set;}
     public Manufacturer Manufacturer {get;set;}
-
+     public GraphicsCardDTO GetGraphicsCardDTO()
+    {
+        return new GraphicsCardDTO(this);
+    }
 }

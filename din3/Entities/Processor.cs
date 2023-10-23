@@ -7,5 +7,8 @@ public class Processor
     public DateTime Created{get;set;}
     public DateTime Updated{get;set;}
     public Manufacturer Manufacturer {get;set;}
-
+       public ProcessorDTO GetProcessorDTO()
+    {
+        return new ProcessorDTO(this);
+    }
 }

@@ -7,4 +7,8 @@ public class Case
     public DateTime Created{get;set;}
     public DateTime Updated{get;set;}
     public Manufacturer Manufacturer {get;set;}
+    public CaseDTO GetCaseDTO()
+    {
+        return new CaseDTO(this);
     }
+}

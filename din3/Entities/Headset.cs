@@ -7,5 +7,8 @@ public class Headset
     public DateTime Created{get;set;}
     public DateTime Updated{get;set;}
     public Manufacturer Manufacturer {get;set;}
-
+      public HeadsetDTO GetHeadsetDTO()
+    {
+        return new HeadsetDTO(this);
+    }
 }

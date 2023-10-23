@@ -7,5 +7,8 @@ public class Mouse
     public DateTime Created{get;set;}
     public DateTime Updated{get;set;}
     public Manufacturer Manufacturer {get;set;}
-
+      public MouseDTO GetMouseDTO()
+    {
+        return new MouseDTO(this);
+    }
 }

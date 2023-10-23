@@ -7,5 +7,8 @@ public class Keyboard
     public DateTime Created{get;set;}
     public DateTime Updated{get;set;}
     public Manufacturer Manufacturer {get;set;}
-
+      public KeyboardDTO GetKeyboardDTO()
+    {
+        return new KeyboardDTO(this);
+    }
 }

@@ -7,5 +7,8 @@ public class PowerSupply
     public DateTime Created{get;set;}
     public DateTime Updated{get;set;}
     public Manufacturer Manufacturer {get;set;}
-
+          public PowerSupplyDTO GetPowerSupplyDTO()
+    {
+        return new PowerSupplyDTO(this);
+    }
 }

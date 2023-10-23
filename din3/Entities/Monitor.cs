@@ -7,5 +7,8 @@ public class Monitor
     public DateTime Created{get;set;}
     public DateTime Updated{get;set;}
     public Manufacturer Manufacturer {get;set;}
-
+     public MonitorDTO GetMonitorDTO()
+    {
+        return new MonitorDTO(this);
+    }
 }
