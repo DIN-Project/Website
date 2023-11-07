@@ -33,6 +33,29 @@ var Processor = await _Din3Context.Processors.FindAsync(id);
 return Ok(Processor);
 }
 
+[HttpGet]
+[Route("/Processor/Images/{id}")]
+public IActionResult GetImage(long id)
+{
+    var cpu = _Din3Context.Processors.FirstOrDefault(m => m.ProcessorId == id);
+
+    if (cpu == null || string.IsNullOrWhiteSpace(cpu.ImagePath))
+    {
+        return NotFound();
+    }
+
+    var directoryPath = "products/images"; 
+    var imagePath = Path.Combine(Directory.GetCurrentDirectory(), directoryPath, cpu.ImagePath);
+
+    if (!System.IO.File.Exists(imagePath))
+    {
+        return NotFound();
+    }
+
+    var imageBytes = System.IO.File.ReadAllBytes(imagePath);
+    return File(imageBytes, "image/jpeg"); 
+}
+
 [HttpPost]
 [Route("/Processor")]
 public async Task<ActionResult> Create(Processor processor)

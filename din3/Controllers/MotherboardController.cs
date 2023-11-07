@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace Din.Controllers;
 
@@ -31,6 +33,29 @@ public async Task<ActionResult> Read(long id)
 {
 var Motherboard = await _Din3Context.Motherboards.FindAsync(id);
 return Ok(Motherboard);
+}
+
+[HttpGet]
+[Route("/Motherboard/Images/{id}")]
+public IActionResult GetImage(long id)
+{
+    var motherboard = _Din3Context.Motherboards.FirstOrDefault(m => m.MotherboardId == id);
+
+    if (motherboard == null || string.IsNullOrWhiteSpace(motherboard.ImagePath))
+    {
+        return NotFound();
+    }
+
+    var directoryPath = "products/images"; 
+    var imagePath = Path.Combine(Directory.GetCurrentDirectory(), directoryPath, motherboard.ImagePath);
+
+    if (!System.IO.File.Exists(imagePath))
+    {
+        return NotFound();
+    }
+
+    var imageBytes = System.IO.File.ReadAllBytes(imagePath);
+    return File(imageBytes, "image/jpeg"); 
 }
 
 [HttpPost]

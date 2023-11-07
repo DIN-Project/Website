@@ -33,6 +33,30 @@ var Monitor = await _Din3Context.Monitors.FindAsync(id);
 return Ok(Monitor);
 }
 
+[HttpGet]
+[Route("/Monitor/Images/{id}")]
+public IActionResult GetImage(long id)
+{
+    var monitor = _Din3Context.Monitors.FirstOrDefault(m => m.MonitorId == id);
+
+    if (monitor == null || string.IsNullOrWhiteSpace(monitor.ImagePath))
+    {
+        return NotFound();
+    }
+
+    var directoryPath = "products/images"; 
+    var imagePath = Path.Combine(Directory.GetCurrentDirectory(), directoryPath, monitor.ImagePath);
+
+    if (!System.IO.File.Exists(imagePath))
+    {
+        return NotFound();
+    }
+
+    var imageBytes = System.IO.File.ReadAllBytes(imagePath);
+    return File(imageBytes, "image/jpeg"); 
+}
+
+
 [HttpPost]
 [Route("/Monitor")]
 public async Task<ActionResult> Create(Monitor monitor)

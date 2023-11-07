@@ -33,6 +33,30 @@ var Case = await _Din3Context.Cases.FindAsync(id);
 return Ok(Case);
 }
 
+[HttpGet]
+[Route("/Case/Images/{id}")]
+public IActionResult GetImage(long id)
+{
+    var cases = _Din3Context.Cases.FirstOrDefault(m => m.CaseId == id);
+
+    if (cases == null || string.IsNullOrWhiteSpace(cases.ImagePath))
+    {
+        return NotFound();
+    }
+
+    var directoryPath = "products/images"; 
+    var imagePath = Path.Combine(Directory.GetCurrentDirectory(), directoryPath, cases.ImagePath);
+
+    if (!System.IO.File.Exists(imagePath))
+    {
+        return NotFound();
+    }
+
+    var imageBytes = System.IO.File.ReadAllBytes(imagePath);
+    return File(imageBytes, "image/jpeg"); 
+}
+
+
 [HttpPost]
 [Route("/Case")]
 public async Task<ActionResult> Create(Case _case)

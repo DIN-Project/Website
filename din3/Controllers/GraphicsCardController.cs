@@ -33,6 +33,30 @@ var GraphicsCard = await _Din3Context.GraphicsCards.FindAsync(id);
 return Ok(GraphicsCard);
 }
 
+[HttpGet]
+[Route("/GraphicsCard/Images/{id}")]
+public IActionResult GetImage(long id)
+{
+    var gpu = _Din3Context.GraphicsCards.FirstOrDefault(m => m.GraphicsCardId == id);
+
+    if (gpu == null || string.IsNullOrWhiteSpace(gpu.ImagePath))
+    {
+        return NotFound();
+    }
+
+    var directoryPath = "products/images"; 
+    var imagePath = Path.Combine(Directory.GetCurrentDirectory(), directoryPath, gpu.ImagePath);
+
+    if (!System.IO.File.Exists(imagePath))
+    {
+        return NotFound();
+    }
+
+    var imageBytes = System.IO.File.ReadAllBytes(imagePath);
+    return File(imageBytes, "image/jpeg"); 
+}
+
+
 [HttpPost]
 [Route("/GraphicsCard")]
 public async Task<ActionResult> Create(GraphicsCard graphicsCard)

@@ -33,6 +33,30 @@ var Cooler = await _Din3Context.Coolers.FindAsync(id);
 return Ok(Cooler);
 }
 
+[HttpGet]
+[Route("/Cooler/Images/{id}")]
+public IActionResult GetImage(long id)
+{
+    var cooler = _Din3Context.Coolers.FirstOrDefault(m => m.CoolerId == id);
+
+    if (cooler == null || string.IsNullOrWhiteSpace(cooler.ImagePath))
+    {
+        return NotFound();
+    }
+
+    var directoryPath = "products/images"; 
+    var imagePath = Path.Combine(Directory.GetCurrentDirectory(), directoryPath, cooler.ImagePath);
+
+    if (!System.IO.File.Exists(imagePath))
+    {
+        return NotFound();
+    }
+
+    var imageBytes = System.IO.File.ReadAllBytes(imagePath);
+    return File(imageBytes, "image/jpeg"); 
+}
+
+
 [HttpPost]
 [Route("/Cooler")]
 public async Task<ActionResult> Create(Cooler cooler)

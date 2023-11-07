@@ -33,6 +33,30 @@ var PowerSupply = await _Din3Context.PowerSupplies.FindAsync(id);
 return Ok(PowerSupply);
 }
 
+[HttpGet]
+[Route("/PowerSupply/Images/{id}")]
+public IActionResult GetImage(long id)
+{
+    var psu = _Din3Context.PowerSupplies.FirstOrDefault(m => m.PowerSupplyId == id);
+
+    if (psu == null || string.IsNullOrWhiteSpace(psu.ImagePath))
+    {
+        return NotFound();
+    }
+
+    var directoryPath = "products/images"; 
+    var imagePath = Path.Combine(Directory.GetCurrentDirectory(), directoryPath, psu.ImagePath);
+
+    if (!System.IO.File.Exists(imagePath))
+    {
+        return NotFound();
+    }
+
+    var imageBytes = System.IO.File.ReadAllBytes(imagePath);
+    return File(imageBytes, "image/jpeg"); 
+}
+
+
 [HttpPost]
 [Route("/PowerSupply")]
 public async Task<ActionResult> Create(PowerSupply powerSupply)

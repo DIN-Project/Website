@@ -33,6 +33,30 @@ var Keyboard = await _Din3Context.Keyboards.FindAsync(id);
 return Ok(Keyboard);
 }
 
+[HttpGet]
+[Route("/Keyboard/Images/{id}")]
+public IActionResult GetImage(long id)
+{
+    var keyboard = _Din3Context.Keyboards.FirstOrDefault(m => m.KeyboardId == id);
+
+    if (keyboard == null || string.IsNullOrWhiteSpace(keyboard.ImagePath))
+    {
+        return NotFound();
+    }
+
+    var directoryPath = "products/images"; 
+    var imagePath = Path.Combine(Directory.GetCurrentDirectory(), directoryPath, keyboard.ImagePath);
+
+    if (!System.IO.File.Exists(imagePath))
+    {
+        return NotFound();
+    }
+
+    var imageBytes = System.IO.File.ReadAllBytes(imagePath);
+    return File(imageBytes, "image/jpeg"); 
+}
+
+
 [HttpPost]
 [Route("/Keyboard")]
 public async Task<ActionResult> Create(Keyboard keyboard)

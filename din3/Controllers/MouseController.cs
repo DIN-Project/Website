@@ -33,6 +33,30 @@ var Mouse = await _Din3Context.Mouses.FindAsync(id);
 return Ok(Mouse);
 }
 
+[HttpGet]
+[Route("/Mouse/Images/{id}")]
+public IActionResult GetImage(long id)
+{
+    var mouse = _Din3Context.Mouses.FirstOrDefault(m => m.MouseId == id);
+
+    if (mouse == null || string.IsNullOrWhiteSpace(mouse.ImagePath))
+    {
+        return NotFound();
+    }
+
+    var directoryPath = "products/images"; 
+    var imagePath = Path.Combine(Directory.GetCurrentDirectory(), directoryPath, mouse.ImagePath);
+
+    if (!System.IO.File.Exists(imagePath))
+    {
+        return NotFound();
+    }
+
+    var imageBytes = System.IO.File.ReadAllBytes(imagePath);
+    return File(imageBytes, "image/jpeg"); 
+}
+
+
 [HttpPost]
 [Route("/Mouse")]
 public async Task<ActionResult> Create(Mouse mouse)

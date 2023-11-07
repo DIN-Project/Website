@@ -33,6 +33,30 @@ var headset = await _Din3Context.Headsets.FindAsync(id);
 return Ok(headset);
 }
 
+[HttpGet]
+[Route("/Headset/Images/{id}")]
+public IActionResult GetImage(long id)
+{
+    var headset = _Din3Context.Headsets.FirstOrDefault(m => m.HeadsetId == id);
+
+    if (headset == null || string.IsNullOrWhiteSpace(headset.ImagePath))
+    {
+        return NotFound();
+    }
+
+    var directoryPath = "products/images"; 
+    var imagePath = Path.Combine(Directory.GetCurrentDirectory(), directoryPath, headset.ImagePath);
+
+    if (!System.IO.File.Exists(imagePath))
+    {
+        return NotFound();
+    }
+
+    var imageBytes = System.IO.File.ReadAllBytes(imagePath);
+    return File(imageBytes, "image/jpeg"); 
+}
+
+
 [HttpPost]
 [Route("/Headset")]
 public async Task<ActionResult> Create(Headset headset)

@@ -33,6 +33,29 @@ var Ram = await _Din3Context.Rams.FindAsync(id);
 return Ok(Ram);
 }
 
+[HttpGet]
+[Route("/Ram/Images/{id}")]
+public IActionResult GetImage(long id)
+{
+    var ram = _Din3Context.Rams.FirstOrDefault(m => m.RamId == id);
+
+    if (ram == null || string.IsNullOrWhiteSpace(ram.ImagePath))
+    {
+        return NotFound();
+    }
+
+    var directoryPath = "products/images"; 
+    var imagePath = Path.Combine(Directory.GetCurrentDirectory(), directoryPath, ram.ImagePath);
+
+    if (!System.IO.File.Exists(imagePath))
+    {
+        return NotFound();
+    }
+
+    var imageBytes = System.IO.File.ReadAllBytes(imagePath);
+    return File(imageBytes, "image/jpeg"); 
+}
+
 [HttpPost]
 [Route("/Ram")]
 public async Task<ActionResult> Create(Ram ram)
