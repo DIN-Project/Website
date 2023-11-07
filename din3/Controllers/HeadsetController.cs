@@ -48,6 +48,47 @@ _Din3Context.SaveChanges();
 return Ok(headset.GetHeadsetDTO());
 }
 
+[HttpPost]
+[Route("/Headset/UploadImage/{id}")]
+public async Task<ActionResult> UploadImage(long id, IFormFile image)
+{
+    var headset = await _Din3Context.Headsets.FindAsync(id);
+
+    if (headset == null)
+    {
+        return BadRequest("Headset not found.");
+    }
+
+    if (image != null && image.Length > 0)
+    {
+        var directoryPath = "products/images";
+        var uniqueFileName = Guid.NewGuid().ToString() + "_" + image.FileName;
+        var imagePath = Path.Combine(directoryPath, uniqueFileName);
+
+        if (!Directory.Exists(directoryPath))
+        {
+            Directory.CreateDirectory(directoryPath);
+        }
+
+        using (var stream = new FileStream(imagePath, FileMode.Create))
+        {
+            await image.CopyToAsync(stream);
+        }
+
+        headset.ImagePath = uniqueFileName;
+        _Din3Context.SaveChanges();
+
+        Console.WriteLine("Image uploaded to: " + imagePath);
+
+        return Ok("Image uploaded successfully.");
+    }
+    else
+    {
+        return BadRequest("Image upload failed.");
+    }
+}
+
+
 [HttpPut]
 [Route("/Headset")]
 public async Task<ActionResult> Update(Headset headset)

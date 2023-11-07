@@ -3,6 +3,7 @@ public record GraphicsCardDTO
     public long GraphicsCardId{get;set;}
     public string Name{get;set;}
     public string Description{get;set;}
+    public string ImagePath {get;set;}
     public long Price{get;set;}
     public DateTime Created{get;set;}
     public DateTime Updated{get;set;}
@@ -12,6 +13,7 @@ public GraphicsCardDTO(GraphicsCard graphicsCard)
     Name = graphicsCard.Name;
     Price = graphicsCard.Price;
     Description = graphicsCard.Description;
+    ImagePath = graphicsCard.ImagePath;
     Created = graphicsCard.Created;
     Updated = graphicsCard.Updated;
 }

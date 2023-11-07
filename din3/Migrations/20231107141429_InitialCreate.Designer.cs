@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace din3.Migrations
 {
     [DbContext(typeof(Din3Context))]
-    [Migration("20231009001947_InitialCreate")]
+    [Migration("20231107141429_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -302,6 +302,10 @@ namespace din3.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ImagePath")
                         .IsRequired()
                         .HasColumnType("TEXT");
 

@@ -48,6 +48,46 @@ _Din3Context.SaveChanges();
 return Ok(keyboard.GetKeyboardDTO());
 }
 
+[HttpPost]
+[Route("/Keyboard/UploadImage/{id}")]
+public async Task<ActionResult> UploadImage(long id, IFormFile image)
+{
+    var keyboard = await _Din3Context.Keyboards.FindAsync(id);
+
+    if (keyboard == null)
+    {
+        return BadRequest("Keyboard not found.");
+    }
+
+    if (image != null && image.Length > 0)
+    {
+        var directoryPath = "products/images";
+        var uniqueFileName = Guid.NewGuid().ToString() + "_" + image.FileName;
+        var imagePath = Path.Combine(directoryPath, uniqueFileName);
+
+        if (!Directory.Exists(directoryPath))
+        {
+            Directory.CreateDirectory(directoryPath);
+        }
+
+        using (var stream = new FileStream(imagePath, FileMode.Create))
+        {
+            await image.CopyToAsync(stream);
+        }
+
+        keyboard.ImagePath = uniqueFileName;
+        _Din3Context.SaveChanges();
+
+        Console.WriteLine("Image uploaded to: " + imagePath);
+
+        return Ok("Image uploaded successfully.");
+    }
+    else
+    {
+        return BadRequest("Image upload failed.");
+    }
+}
+
 [HttpPut]
 [Route("/Keyboard")]
 public async Task<ActionResult> Update(Keyboard keyboard)

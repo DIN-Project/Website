@@ -302,6 +302,10 @@ namespace din3.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("ImagePath")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<long>("ManufacturerId")
                         .HasColumnType("INTEGER");
 

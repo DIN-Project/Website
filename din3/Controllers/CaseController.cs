@@ -48,6 +48,46 @@ _Din3Context.SaveChanges();
 return Ok(_case.GetCaseDTO());
 }
 
+[HttpPost]
+[Route("/Case/UploadImage/{id}")]
+public async Task<ActionResult> UploadImage(long id, IFormFile image)
+{
+    var cases = await _Din3Context.Cases.FindAsync(id);
+
+    if (cases == null)
+    {
+        return BadRequest("Case not found.");
+    }
+
+    if (image != null && image.Length > 0)
+    {
+        var directoryPath = "products/images";
+        var uniqueFileName = Guid.NewGuid().ToString() + "_" + image.FileName;
+        var imagePath = Path.Combine(directoryPath, uniqueFileName);
+
+        if (!Directory.Exists(directoryPath))
+        {
+            Directory.CreateDirectory(directoryPath);
+        }
+
+        using (var stream = new FileStream(imagePath, FileMode.Create))
+        {
+            await image.CopyToAsync(stream);
+        }
+
+        cases.ImagePath = uniqueFileName;
+        _Din3Context.SaveChanges();
+
+        Console.WriteLine("Image uploaded to: " + imagePath);
+
+        return Ok("Image uploaded successfully.");
+    }
+    else
+    {
+        return BadRequest("Image upload failed.");
+    }
+}
+
 [HttpPut]
 [Route("/Case")]
 public async Task<ActionResult> Update(Case _case)

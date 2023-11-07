@@ -3,6 +3,7 @@ public record CaseDTO
     public long CaseId{get;set;}
     public string Name{get;set;}
     public string Description{get;set;}
+    public string ImagePath {get; set;}
     public long Price{get;set;}
     public DateTime Created{get;set;}
     public DateTime Updated{get;set;}
@@ -12,6 +13,7 @@ public CaseDTO(Case _case)
     Name = _case.Name;
     Price = _case.Price;
     Description = _case.Description;
+    ImagePath = _case.ImagePath;
     Created = _case.Created;
     Updated = _case.Updated;
 }

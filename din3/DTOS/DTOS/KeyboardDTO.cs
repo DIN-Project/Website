@@ -3,6 +3,7 @@ public record KeyboardDTO
     public long KeyboardId{get;set;}
     public string Name{get;set;}
     public string Description{get;set;}
+    public string ImagePath {get; set;}
     public long Price{get;set;}
     public DateTime Created{get;set;}
     public DateTime Updated{get;set;}
@@ -12,6 +13,7 @@ public KeyboardDTO(Keyboard keyboard)
     Name = keyboard.Name;
     Price = keyboard.Price;
     Description = keyboard.Description;
+    ImagePath = keyboard.ImagePath;
     Created = keyboard.Created;
     Updated = keyboard.Updated;
 }

@@ -49,6 +49,47 @@ _Din3Context.SaveChanges();
 return Ok(cooler.GetCoolerDTO());
 }
 
+[HttpPost]
+[Route("/Cooler/UploadImage/{id}")]
+public async Task<ActionResult> UploadImage(long id, IFormFile image)
+{
+    var cooler = await _Din3Context.Coolers.FindAsync(id);
+
+    if (cooler == null)
+    {
+        return BadRequest("Cooler not found.");
+    }
+
+    if (image != null && image.Length > 0)
+    {
+        var directoryPath = "products/images";
+        var uniqueFileName = Guid.NewGuid().ToString() + "_" + image.FileName;
+        var imagePath = Path.Combine(directoryPath, uniqueFileName);
+
+        if (!Directory.Exists(directoryPath))
+        {
+            Directory.CreateDirectory(directoryPath);
+        }
+
+        using (var stream = new FileStream(imagePath, FileMode.Create))
+        {
+            await image.CopyToAsync(stream);
+        }
+
+        cooler.ImagePath = uniqueFileName;
+        _Din3Context.SaveChanges();
+
+        Console.WriteLine("Image uploaded to: " + imagePath);
+
+        return Ok("Image uploaded successfully.");
+    }
+    else
+    {
+        return BadRequest("Image upload failed.");
+    }
+}
+
+
 [HttpPut]
 [Route("/Cooler")]
 public async Task<ActionResult> Update(Cooler cooler)

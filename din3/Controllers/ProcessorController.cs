@@ -48,6 +48,46 @@ _Din3Context.SaveChanges();
 return Ok(processor.GetProcessorDTO());
 }
 
+[HttpPost]
+[Route("/Processor/UploadImage/{id}")]
+public async Task<ActionResult> UploadImage(long id, IFormFile image)
+{
+    var cpu = await _Din3Context.Processors.FindAsync(id);
+
+    if (cpu == null)
+    {
+        return BadRequest("Processor not found.");
+    }
+
+    if (image != null && image.Length > 0)
+    {
+        var directoryPath = "products/images";
+        var uniqueFileName = Guid.NewGuid().ToString() + "_" + image.FileName;
+        var imagePath = Path.Combine(directoryPath, uniqueFileName);
+
+        if (!Directory.Exists(directoryPath))
+        {
+            Directory.CreateDirectory(directoryPath);
+        }
+
+        using (var stream = new FileStream(imagePath, FileMode.Create))
+        {
+            await image.CopyToAsync(stream);
+        }
+
+        cpu.ImagePath = uniqueFileName;
+        _Din3Context.SaveChanges();
+
+        Console.WriteLine("Image uploaded to: " + imagePath);
+
+        return Ok("Image uploaded successfully.");
+    }
+    else
+    {
+        return BadRequest("Image upload failed.");
+    }
+}
+
 [HttpPut]
 [Route("/Processor")]
 public async Task<ActionResult> Update(Processor processor)
