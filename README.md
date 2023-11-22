@@ -4,9 +4,9 @@ Getting Started
 First, clone the repository
 
 # First
-close repository
+Clone repository
 # Then
-start debugging
+Start debugging
 
 Open http://localhost:3000/swagger to see the page.
 
